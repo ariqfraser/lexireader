@@ -2,7 +2,7 @@
 
 ### How to install:
 #### Method 1
-1. Download latest release `.zip` and extract.
+1. Download latest [release](https://github.com/ariqfraser/lexireader/releases) and extract.
 2. Load the extension on Chrome (or other Chromium browsers):
    1. Access `chrome://extensions/`
    2. Enable `Developer mode`
