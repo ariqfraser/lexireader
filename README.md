@@ -2,8 +2,8 @@
 
 # LexiReader
 
-### How to install:
-#### Method 1
+## How to install:
+### Method 1
 1. Download latest [release](https://github.com/ariqfraser/lexireader/releases) and extract.
 2. Load the extension on Chrome (or other Chromium browsers):
    1. Access `chrome://extensions/`
@@ -11,7 +11,7 @@
    3. Click on `Load unpacked extension`
    4. Select the `lexireader-vx.x.x` folder.
 
-#### Method 2
+### Method 2
 1. Clone this repository.
 2. Ensure your [Node.js](https://nodejs.org/) version is >= **14**.
 3. Run `npm i`
