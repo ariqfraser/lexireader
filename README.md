@@ -1,15 +1,11 @@
-<img src="src/assets/img/icon-128.png" width="64"/>
-
 # LexiReader
 
-## Installing LexiReader
-
-### Procedures:
+### How to install:
 
 1. Clone this repository.
-2. Load your extension on Chrome (or other Chromium browsers) following:
+2. Load the extension on Chrome (or other Chromium browsers):
    1. Access `chrome://extensions/`
-   2. Check `Developer mode`
+   2. Enable `Developer mode`
    3. Click on `Load unpacked extension`
    4. Select the `build` folder.
 
