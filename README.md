@@ -1,4 +1,4 @@
-<img src="src/assets/img/icon-128.png" width="64" />
+<img src="src/assets/img/iconW-128.png" width="64" />
 
 # LexiReader
 
