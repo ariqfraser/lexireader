@@ -11,4 +11,5 @@
 
 ## Acknowledgements
 
-- **_This application was developed using [chrome-extension-boilerplate-react](https://github.com/lxieyang/chrome-extension-boilerplate-react)!_** Boilerplate MIT License can be found in `LICENSE`
+- **_This application was developed using [chrome-extension-boilerplate-react](https://github.com/lxieyang/chrome-extension-boilerplate-react)!_** 
+   - MIT License can be found in `LICENSE`
