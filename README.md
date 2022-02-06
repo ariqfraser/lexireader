@@ -11,7 +11,7 @@
 
 #### Method 2
 1. Clone this repository.
-2. Check if your [Node.js](https://nodejs.org/) version is >= **14**.
+2. Ensure your [Node.js](https://nodejs.org/) version is >= **14**.
 3. Run `npm i`.
 4. Run `npm run build`
 5. Load the extension on Chrome (or other Chromium browsers):
