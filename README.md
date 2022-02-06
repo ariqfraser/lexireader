@@ -7,7 +7,7 @@
    1. Access `chrome://extensions/`
    2. Enable `Developer mode`
    3. Click on `Load unpacked extension`
-   4. Select the `lexireadervx.x.x` folder.
+   4. Select the `lexireader-vx.x.x` folder.
 
 #### Method 2
 1. Clone this repository.
