@@ -8,12 +8,15 @@ chrome.runtime.onInstalled.addListener(() => {
 let LR_lang = 'spn';
 let LR_scope = 100;
 
-chrome.storage.sync.set({
-  'LR_lang': LR_lang,
-  'LR_scope': LR_scope
-}, () => {
-  console.log(`Language is set to ${LR_lang} and will translate ${LR_scope} of the most common words.`)
-});
+const setDefaultSettings = () => {
+  chrome.storage.sync.set({
+    'LR_lang': LR_lang,
+    'LR_scope': LR_scope
+  }, () => {
+    console.log(`Language is set to ${LR_lang} and will translate ${LR_scope} of the most common words.`)
+  });
+}
+
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
   for (let [key, {
