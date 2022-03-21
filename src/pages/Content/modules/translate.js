@@ -1,67 +1,130 @@
+import { ConfirmationNumber } from '@mui/icons-material';
+
 function sleep(delay = 0) {
     return new Promise((resolve) => {
         setTimeout(resolve, delay);
     });
 }
 
-const updatePage = async (scope, langObj) => {
-    // console.log('updatePage() running...');
-    console.log(Object.keys(langObj), Object.keys(langObj).length);
-    if (scope > Object.keys(langObj).length) return 'scope too long';
+const getNodeList = async () => {
+    console.time('getNodeList');
+    let node,
+        nodeList = [],
+        nodeListTagNames = [],
+        isConnected = [],
+        walker = document.createTreeWalker(
+            document.body,
+            NodeFilter.SHOW_TEXT,
+            {
+                acceptNode: (node) => {
+                    return (node.textContent.trim() !== '' &&
+                        // node.parentElement.classList.value !== 'lr-word' &&
+                        node.parentElement.tagName !== 'STYLE' &&
+                        node.parentElement.tagName !== 'SPAN' &&
+                        node.parentElement.nodeValue !== (null || undefined) &&
+                        node.parentElement.tagName !== 'SCRIPT' &&
+                        node.parentElement.tagName !== 'CODE') ||
+                        node.parentElement.tagName.includes('H')
+                        ? NodeFilter.FILTER_ACCEPT
+                        : NodeFilter.FILTER_REJECT;
+                },
+            }
+        );
 
-    const pTags = document.getElementsByTagName('p');
-    const divTags = document.getElementsByTagName('div');
-    const keys = Object.keys(langObj);
-    //console.log(pTags);
-    for (let ii = 0; ii < divTags.length; ii++) {
-        for (let i = 0; i < scope; i++) {
-            const expSpace = '\\b\\s' + keys[i] + '\\s\\b';
-            const expPeriod = '\\b' + keys[i] + '\\.\\b';
-            const expComma = '\\b' + keys[i] + ',\\b';
-            const expFirstWord = '\\b>' + keys[i] + '\\s\\b';
-
-            const word = langObj[keys[i]].word;
-            const text = "<span class='lr-word'>" + word + ' </span>';
-            divTags[ii].innerHTML = divTags[ii].innerHTML.replace(
-                new RegExp(expSpace, 'giu'),
-                ' ' + text + ' '
-            );
-            divTags[ii].innerHTML = divTags[ii].innerHTML.replace(
-                new RegExp(expPeriod, 'giu'),
-                text + '.'
-            );
-            divTags[ii].innerHTML = divTags[ii].innerHTML.replace(
-                new RegExp(expComma, 'giu'),
-                text + ','
-            );
-            divTags[ii].innerHTML = divTags[ii].innerHTML.replace(
-                new RegExp(expFirstWord, 'giu'),
-                '>' + text
-            );
-        }
-
-        if (ii % 1 === 0) {
-            await sleep(1e3);
-        }
+    let prevNode = '';
+    // update page
+    while ((node = walker.nextNode())) {
+        const currNode = walker.currentNode.parentElement.innerHTML;
+        if (currNode === (null || undefined)) continue;
+        if (prevNode === currNode) continue;
+        isConnected.push(walker.currentNode.parentElement.isConnected);
+        prevNode = currNode;
+        nodeListTagNames.push(node.parentElement.tagName);
+        nodeList.push(node.parentElement);
     }
-
-    return 'success';
+    console.table(nodeList);
+    console.table(isConnected);
+    console.timeEnd('getNodeList');
+    return nodeList;
 };
 
-export const translatePage = async (scope, lang) => {
+const createStyleElement = () => {
     const styleElement = document.createElement('style');
     styleElement.innerHTML = `
-    .lr-word {
-        color: red
-    }
-    `;
-
+        .lr-word {
+            color: red
+        }
+        `;
     styleElement.id = 'lrStyle';
 
     const styleExist = document.getElementById('lrStyle');
-    if (styleExist === null) document.body.appendChild(styleElement);
-    console.log('in promise created in translatePage()');
+    if (styleExist === null) {
+        document.body.appendChild(styleElement);
+        console.log('styling created');
+    }
+};
+
+export const translatePage = async (scope, lang) => {
+    createStyleElement();
     Promise.resolve()
-        .then(updatePage(scope, lang))
-        .then((res) => console.log(res));
+        .then(() => getNodeList())
+        .then((nodeList) => {
+            console.time('updateNodeList');
+            for (let [index, node] of nodeList.entries()) {
+                console.log(index, node);
+                console.log(node.innerHTML);
+                // if (node.innerHTML === (undefined || null)) continue;
+                // if (node.nodeValue === (null || undefined)) continue;
+                let tempHTML = node.innerHTML.toString();
+
+                for (let key in lang) {
+                    if (parseInt(lang[key]['rank']) > scope) continue;
+                    // console.log(key, lang[key]['word']);
+
+                    const expressions = [
+                            '\\b\\s' + key + '\\s\\b',
+                            '\\b>\\s' + key + '\\s\\b',
+                            '\\b' + key + '\\.\\b',
+                            '\\b' + key + ',\\b',
+                            '\\b>' + key + '\\s\\b',
+                            "(<span class='lr-word'>" + key + '</span>)',
+                            '\\b\\.\\s' + key + '\\s\\b',
+                        ],
+                        insert = [
+                            " <span class='lr-word'>" +
+                                lang[key]['word'] +
+                                '</span> ',
+                            "> <span class='lr-word'>" +
+                                lang[key]['word'] +
+                                '</span> ',
+                            "<span class='lr-word'>" +
+                                lang[key]['word'] +
+                                '</span>.',
+                            "<span class='lr-word'>" +
+                                lang[key]['word'] +
+                                ',</span>',
+                            "><span class='lr-word'>" +
+                                lang[key]['word'] +
+                                '</span> ',
+                            "<span class='lr-word'>" +
+                                lang[key]['word'] +
+                                '</span>',
+                            ". <span class='lr-word'>" +
+                                lang[key]['word'] +
+                                '</span> ',
+                        ];
+
+                    for (let i in expressions) {
+                        tempHTML = tempHTML.replace(
+                            new RegExp(expressions[i], 'giu'),
+                            insert[i]
+                        );
+                    }
+                }
+
+                node.innerHTML = tempHTML;
+            }
+            console.timeEnd('updateNodeList');
+        })
+        .catch((err) => console.log(err));
 };

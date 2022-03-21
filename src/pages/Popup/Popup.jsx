@@ -74,8 +74,7 @@ function Popup() {
             setSyncLang(results.LR_lang);
             console.log('got lang:', results.LR_lang);
 
-            const inputLang =
-                document.getElementById('language-selector').value;
+            let inputLang = document.getElementById('language-selector').value;
             inputLang = results.LR_lang;
         });
     }, []);
